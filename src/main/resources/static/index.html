@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+    <!-- Nastavení kódování stránky. -->
+    <meta charset="UTF-8">
+
+    <!-- Přizpůsobení zobrazení pro různé velikosti obrazovek. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Název stránky zobrazený v záložce prohlížeče. -->
+    <title>CLED – přihlášení</title>
+
+    <style>
+        /* Základní vzhled celé stránky. */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Hlavní karta přihlašovacího formuláře. */
+        .login-box {
+            width: 350px;
+            background-color: white;
+            padding: 35px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+
+        /* Nastavení vzhledu loga CLED. */
+        .logo {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+
+        /* Hlavní nadpis aplikace CLED. */
+        h1 {
+            margin: 0 0 10px;
+            color: #2e7d32;
+        }
+
+        /* Krátký popis aplikace pod hlavním názvem. */
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        /* Popisky jednotlivých polí formuláře. */
+        label {
+            display: block;
+            text-align: left;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        /* Vzhled polí pro zadání e-mailu a hesla. */
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 11px;
+            margin-bottom: 18px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 15px;
+        }
+
+        /* Hlavní tlačítko pro odeslání přihlašovacího formuláře. */
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            background-color: #2e7d32;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* Změna barvy tlačítka při najetí kurzorem. */
+        button:hover {
+            background-color: #256628;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Hlavní přihlašovací karta aplikace CLED. -->
+    <div class="login-box">
+
+        <!-- Logo aplikace CLED. -->
+        <img src="images/icon.png" alt="Logo CLED" class="logo">
+
+        <!-- Název aplikace. -->
+        <h1>CLED</h1>
+
+        <!-- Krátký popis aplikace. -->
+        <div class="subtitle">
+            Správa sportovního klubu a svazu
+        </div>
+
+        <!-- Přihlašovací formulář. -->
+        <form method="post" action="/login">
+
+            <!-- Pole pro zadání e-mailové adresy. -->
+            <label for="email">E-mail</label>
+
+            <input type="email" id="email" name="email" placeholder="Zadejte e-mail">
+
+            <!-- Pole pro zadání hesla. -->
+            <label for="heslo">Heslo</label>
+
+            <input type="password" id="heslo" name="heslo" placeholder="Zadejte heslo">
+
+            <!-- Tlačítko pro přihlášení. -->
+            <button type="submit">Přihlásit</button>
+
+        </form>
+
+    </div>
+
+</body>
+
+</html>
