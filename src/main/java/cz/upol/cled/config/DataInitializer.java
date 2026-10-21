@@ -38,7 +38,7 @@ public class DataInitializer {
 
         return args -> {
 
-            String email = "admin@cled.cz";
+            String email = "admin@cled-app.cz";
 
             if (uzivatelRepository.findByEmail(email).isEmpty()) {
 
