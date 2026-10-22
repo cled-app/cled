@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLED – Klub</title>
+
+    <style>
+        :root {
+            --zelena: #198754;
+            --tmava-zelena: #126640;
+            --svetla-zelena: #eaf5ee;
+            --pozadi: #f5f7f6;
+            --bila: #ffffff;
+            --text: #26332b;
+            --seda: #6c757d;
+            --okraj: #dee5e0;
+            --cervena: #dc3545;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            color: var(--text);
+            background: var(--pozadi);
+        }
+
+        header {
+            background: var(--bila);
+            border-bottom: 1px solid var(--okraj);
+            padding: 16px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            color: var(--zelena);
+            font-size: 27px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: var(--text);
+            font-size: 14px;
+            font-weight: normal;
+            letter-spacing: 0;
+            margin-left: 10px;
+        }
+
+        .uzivatel {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .role {
+            background: var(--svetla-zelena);
+            color: var(--tmava-zelena);
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        button, .tlacitko {
+            border: none;
+            border-radius: 6px;
+            padding: 10px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .tlacitko-zelene {
+            background: var(--zelena);
+            color: white;
+        }
+
+        .tlacitko-zelene:hover {
+            background: var(--tmava-zelena);
+        }
+
+        .tlacitko-sede {
+            background: #e9ecef;
+            color: var(--text);
+        }
+
+        .tlacitko-cervene {
+            background: #fdebed;
+            color: #a71d2a;
+        }
+
+        .rozlozeni {
+            display: grid;
+            grid-template-columns: 245px minmax(0, 1fr);
+            min-height: calc(100vh - 75px);
+        }
+
+        aside {
+            background: var(--bila);
+            border-right: 1px solid var(--okraj);
+            padding: 22px 14px;
+        }
+
+        .menu-nadpis {
+            color: var(--seda);
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 10px 12px;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .menu a {
+            color: var(--text);
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 7px;
+            font-size: 14px;
+        }
+
+        .menu a:hover,
+        .menu a.aktivni {
+            background: var(--svetla-zelena);
+            color: var(--tmava-zelena);
+            font-weight: bold;
+        }
+
+        main {
+            padding: 30px;
+            min-width: 0;
+        }
+
+        .hlavicka-stranky {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 28px;
+        }
+
+        h2 {
+            margin: 0 0 18px;
+            font-size: 19px;
+        }
+
+        h3 {
+            margin: 0 0 10px;
+            font-size: 16px;
+        }
+
+        .popis {
+            margin: 0;
+            color: var(--seda);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .statistiky {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .karta {
+            background: var(--bila);
+            border: 1px solid var(--okraj);
+            border-radius: 10px;
+            padding: 22px;
+            min-width: 0;
+        }
+
+        .statistika-nazev {
+            color: var(--seda);
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .statistika-hodnota {
+            font-size: 30px;
+            font-weight: bold;
+            color: var(--tmava-zelena);
+        }
+
+        .sekce {
+            background: var(--bila);
+            border: 1px solid var(--okraj);
+            border-radius: 10px;
+            padding: 22px;
+            margin-bottom: 22px;
+        }
+
+        .hlavicka-sekce {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        .hlavicka-sekce h2 {
+            margin: 0;
+        }
+
+        .mrizka-formulare {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .pole {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .pole.cela-sirka {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            border: 1px solid #ced8d1;
+            border-radius: 6px;
+            padding: 11px 12px;
+            font: inherit;
+            font-size: 14px;
+            background: white;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: 2px solid #b7dfc6;
+            border-color: var(--zelena);
+        }
+
+        input[readonly] {
+            background: #f0f2f1;
+            color: #5c665f;
+        }
+
+        .pomocny-text {
+            color: var(--seda);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .akce-formulare {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }
+
+        .tabulka-oblast {
+            overflow-x: auto;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 13px 12px;
+            border-bottom: 1px solid var(--okraj);
+            white-space: nowrap;
+        }
+
+        th {
+            background: #f7f9f7;
+            color: #536057;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+        }
+
+        tbody tr:hover {
+            background: #fafcfb;
+        }
+
+        .stav {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 15px;
+            background: var(--svetla-zelena);
+            color: var(--tmava-zelena);
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .stav-neaktivni {
+            background: #f0f1f2;
+            color: #5c636a;
+        }
+
+        .stav-varovani {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .mrizka-dvou {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .rychla-akce {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .rychla-akce p {
+            color: var(--seda);
+            font-size: 13px;
+            line-height: 1.5;
+            margin: 0 0 5px;
+        }
+
+        .zprava {
+            display: none;
+            padding: 12px 14px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .zprava-info {
+            display: block;
+            background: #e8f1ff;
+            color: #174a8b;
+        }
+
+        .prazdno {
+            text-align: center;
+            color: var(--seda);
+            padding: 25px 12px;
+        }
+
+        footer {
+            text-align: center;
+            color: var(--seda);
+            font-size: 12px;
+            padding: 18px;
+        }
+
+        @media (max-width: 1050px) {
+            .statistiky {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .rozlozeni {
+                grid-template-columns: 205px minmax(0, 1fr);
+            }
+
+            main {
+                padding: 22px;
+            }
+        }
+
+        @media (max-width: 700px) {
+            header {
+                padding: 14px 18px;
+            }
+
+            .rozlozeni {
+                grid-template-columns: 1fr;
+            }
+
+            aside {
+                border-right: none;
+                border-bottom: 1px solid var(--okraj);
+                padding: 12px;
+            }
+
+            .menu {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            main {
+                padding: 17px;
+            }
+
+            .statistiky,
+            .mrizka-dvou,
+            .m rizka-formulare {
+                grid-template-columns: 1fr;
+            }
+
+            .m rizka-formulare {
+                grid-template-columns: 1fr;
+            }
+
+            .pole.cela-sirka {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <div class="logo">CLED <span>Správa sportovního klubu</span></div>
+
+    <div class="uzivatel">
+        <span class="role">KLUB</span>
+        <span id="jmeno-uzivatele">Přihlášený uživatel</span>
+        <button class="tlacitko-sede" type="button" id="odhlasit">Odhlásit</button>
+    </div>
+</header>
+
+<div class="rozlozeni">
+    <aside>
+        <div class="menu-nadpis">Klubová správa</div>
+
+        <nav class="menu">
+            <a href="#prehled" class="aktivni">Přehled</a>
+            <a href="#udaje-klubu">Údaje klubu</a>
+            <a href="#treneri">Trenéři</a>
+            <a href="#sportovci">Sportovci</a>
+            <a href="#rodice">Rodiče</a>
+            <a href="#skupiny">Tréninkové skupiny</a>
+            <a href="#treninky">Tréninky</a>
+            <a href="#dochazka">Docházka</a>
+            <a href="#akce">Sportovní akce</a>
+        </nav>
+    </aside>
+
+    <main>
+        <section id="prehled">
+            <div class="hlavicka-stranky">
+                <div>
+                    <h1>Klubový přehled</h1>
+                    <p class="popis">
+                        Správa členů, trenérů a každodenního provozu klubu.
+                    </p>
+                </div>
+
+                <button class="tlacitko-zelene" type="button"
+                        onclick="window.location.hash = 'sportovci'">
+                    + Přidat sportovce
+                </button>
+            </div>
+
+            <div id="zprava" class="zprava" role="status"></div>
+
+            <div class="statistiky">
+                <div class="karta">
+                    <div class="statistika-nazev">Trenéři</div>
+                    <div class="statistika-hodnota" id="pocet-treneru">—</div>
+                </div>
+
+                <div class="karta">
+                    <div class="statistika-nazev">Sportovci</div>
+                    <div class="statistika-hodnota" id="pocet-sportovcu">—</div>
+                </div>
+
+                <div class="karta">
+                    <div class="statistika-nazev">Tréninkové skupiny</div>
+                    <div class="statistika-hodnota" id="pocet-skupin">—</div>
+                </div>
+
+                <div class="karta">
+                    <div class="statistika-nazev">Nadcházející akce</div>
+                    <div class="statistika-hodnota" id="pocet-akci">—</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="sekce" id="udaje-klubu">
+            <div class="hlavicka-sekce">
+                <h2>Údaje klubu</h2>
+                <span class="stav">Vlastní klub</span>
+            </div>
+
+            <div class="m rizka-formulare">
+                <div class="pole">
+                    <label for="klub-nazev">Název klubu</label>
+                    <input id="klub-nazev" type="text" readonly
+                           placeholder="Načte se z databáze">
+                </div>
+
+                <div class="pole">
+                    <label for="klub-ico">IČO</label>
+                    <input id="klub-ico" type="text" readonly
+                           placeholder="Načte se z databáze">
+                </div>
+
+                <div class="pole">
+                    <label for="klub-email">Kontaktní e-mail</label>
+                    <input id="klub-email" type="email" readonly
+                           placeholder="Načte se z databáze">
+                </div>
+
+                <div class="pole">
+                    <label for="klub-telefon">Telefon</label>
+                    <input id="klub-telefon" type="tel" readonly
+                           placeholder="Načte se z databáze">
+                </div>
+
+                <div class="pole cela-sirka">
+                    <label for="klub-adresa">Adresa klubu</label>
+                    <input id="klub-adresa" type="text" readonly
+                           placeholder="Načte se z databáze">
+                </div>
+
+                <div class="pole cela-sirka">
+                    <label for="klub-svaz">Nadřazený svaz</label>
+                    <input id="klub-svaz" type="text" readonly
+                           placeholder="Načte se z databáze">
+                    <span class="pomocny-text">
+                        Údaje a příslušnost klubu spravuje oprávněný administrátor nebo svaz.
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <div class="mrizka-dvou">
+            <section class="sekce rychla-akce">
+                <h2>Trenéři</h2>
+                <p>
+                    Vytvářejte účty trenérů a přiřazujte je k tréninkovým skupinám.
+                </p>
+                <button class="tlacitko-zelene" type="button"
+                        onclick="window.location.hash = 'treneri'">
+                    Spravovat trenéry
+                </button>
+            </section>
+
+            <section class="sekce rychla-akce">
+                <h2>Sportovci a rodiče</h2>
+                <p>
+                    Zakládejte sportovce, vytvářejte přístup rodičům a propojujte
+                    rodiče s jejich dětmi.
+                </p>
+                <button class="tlacitko-zelene" type="button"
+                        onclick="window.location.hash = 'sportovci'">
+                    Spravovat sportovce
+                </button>
+            </section>
+        </div>
+
+        <section class="sekce" id="treneri">
+            <div class="hlavicka-sekce">
+                <h2>Trenéři klubu</h2>
+                <button class="tlacitko-zelene" type="button"
+                        onclick="zobrazZpravu('Vytváření účtů trenérů bude propojeno s API.')">
+                    + Nový trenér
+                </button>
+            </div>
+
+            <div class="tabulka-oblast">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Jméno a příjmení</th>
+                        <th>E-mail</th>
+                        <th>Tréninková skupina</th>
+                        <th>Stav účtu</th>
+                        <th>Akce</th>
+                    </tr>
+                    </thead>
+                    <tbody id="seznam-treneru">
+                    <tr>
+                        <td colspan="5" class="prazdno">
+                            Trenéři se načtou po propojení s API.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="sekce" id="sportovci">
+            <div class="hlavicka-sekce">
+                <h2>Sportovci klubu</h2>
+                <button class="tlacitko-zelene" type="button"
+                        onclick="zobrazZpravu('Vytváření účtů sportovců bude propojeno s API.')">
+                    + Nový sportovec
+                </button>
+            </div>
+
+            <div class="tabulka-oblast">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Jméno a příjmení</th>
+                        <th>E-mail</th>
+                        <th>Tréninková skupina</th>
+                        <th>Zdravotní prohlídka</th>
+                        <th>Stav</th>
+                        <th>Akce</th>
+                    </tr>
+                    </thead>
+                    <tbody id="seznam-sportovcu">
+                    <tr>
+                        <td colspan="6" class="prazdno">
+                            Sportovci se načtou po propojení s API.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="sekce" id="rodice">
+            <div class="hlavicka-sekce">
+                <h2>Rodiče</h2>
+                <button class="tlacitko-zelene" type="button"
+                        onclick="zobrazZpravu('Vytváření účtů rodičů a jejich propojení se sportovci bude propojeno s API.')">
+                    + Nový rodič
+                </button>
+            </div>
+
+            <p class="popis">
+                Rodič získá přístup k informacím o propojeném dítěti.
+                Přístup musí být ověřen a omezen pouze na příslušné dítě.
+            </p>
+
+            <div class="tabulka-oblast" style="margin-top: 18px;">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Jméno a příjmení rodiče</th>
+                        <th>E-mail</th>
+                        <th>Propojený sportovec</th>
+                        <th>Stav</th>
+                        <th>Akce</th>
+                    </tr>
+                    </thead>
+                    <tbody id="seznam-rodicu">
+                    <tr>
+                        <td colspan="5" class="prazdno">
+                            Rodiče se načtou po propojení s API.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="sekce" id="skupiny">
+            <div class="hlavicka-sekce">
+                <h2>Tréninkové skupiny</h2>
+                <button class="tlacitko-zelene" type="button"
+                        onclick="zobrazZpravu('Vytváření tréninkových skupin bude propojeno s API.')">
+                    + Nová skupina
+                </button>
+            </div>
+
+            <div class="tabulka-oblast">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Název skupiny</th>
+                        <th>Trenér</th>
+                        <th>Počet sportovců</th>
+                        <th>Stav</th>
+                        <th>Akce</th>
+                    </tr>
+                    </thead>
+                    <tbody id="seznam-skupin">
+                    <tr>
+                        <td colspan="5" class="prazdno">
+                            Skupiny se načtou po propojení s API.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="sekce" id="treninky">
+            <div class="hlavicka-sekce">
+                <h2>Tréninky</h2>
+                <button class="tlacitko-zelene" type="button"
+                        onclick="zobrazZpravu('Plánování tréninků bude propojeno s API.')">
+                    + Naplánovat trénink
+                </button>
+            </div>
+
+            <div class="tabulka-oblast">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Datum</th>
+                        <th>Čas</th>
+                        <th>Skupina</th>
+                        <th>Trenér</th>
+                        <th>Místo</th>
+                        <th>Akce</th>
+                    </tr>
+                    </thead>
+                    <tbody id="seznam-treninku">
+                    <tr>
+                        <td colspan="6" class="prazdno">
+                            Plánované tréninky se načtou po propojení s API.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="sekce" id="dochazka">
+            <div class="hlavicka-sekce">
+                <h2>Docházka</h2>
+            </div>
+
+            <p class="popis">
+                Evidence přítomnosti, omluvených absencí a neomluvených absencí
+                na jednotlivých trénincích.
+            </p>
+
+            <div class="m rizka-formulare" style="margin-top: 18px;">
+                <div class="pole">
+                    <label for="dochazka-trenink">Trénink</label>
+                    <select id="dochazka-trenink">
+                        <option value="">Vyberte trénink</option>
+                    </select>
+                </div>
+
+                <div class="pole">
+                    <label for="dochazka-skupina">Tréninková skupina</label>
+                    <select id="dochazka-skupina">
+                        <option value="">Vyberte skupinu</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="akce-formulare">
+                <button class="tlacitko-zelene" type="button"
+                        onclick="zobrazZpravu('Evidence docházky bude propojena s API.')">
+                    Otevřít docházku
+                </button>
+            </div>
+        </section>
+
+        <section class="sekce" id="akce">
+            <div class="hlavicka-sekce">
+                <h2>Sportovní akce</h2>
+                <button class="tlacitko-zelene" type="button"
+                        onclick="zobrazZpravu('Vytváření sportovních akcí bude propojeno s API.')">
+                    + Nová akce
+                </button>
+            </div>
+
+            <div class="tabulka-oblast">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Název akce</th>
+                        <th>Datum</th>
+                        <th>Místo</th>
+                        <th>Typ akce</th>
+                        <th>Akce</th>
+                    </tr>
+                    </thead>
+                    <tbody id="seznam-akci">
+                    <tr>
+                        <td colspan="5" class="prazdno">
+                            Sportovní akce se načtou po propojení s API.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <footer>
+            CLED – Club Edit | Správa sportovních klubů
+        </footer>
+    </main>
+</div>
+
+<script>
+    // Zobrazení informační zprávy uživateli.
+    function zobrazZpravu(text) {
+        const zprava = document.getElementById("zprava");
+        zprava.textContent = text;
+        zprava.className = "zprava zprava-info";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    // Zvýraznění právě vybrané položky menu.
+    document.querySelectorAll(".menu a").forEach(odkaz => {
+        odkaz.addEventListener("click", () => {
+            document.querySelectorAll(".menu a").forEach(polozka => {
+                polozka.classList.remove("aktivni");
+            });
+
+            odkaz.classList.add("aktivni");
+        });
+    });
+
+    // Odhlášení bude potřeba propojit se skutečným přihlašováním Spring Security.
+    document.getElementById("odhlasit").addEventListener("click", () => {
+        zobrazZpravu("Odhlášení bude propojeno se Spring Security.");
+    });
+
+    /*
+     * Další krok:
+     * Napojit stránku na API Spring Bootu:
+     * - načtení údajů přihlášeného klubu,
+     * - seznam trenérů, sportovců a rodičů,
+     * - tréninkové skupiny, tréninky, docházku a akce,
+     * - vytváření a úpravy záznamů.
+     *
+     * Backend musí ověřovat roli KLUB a kontrolovat, že klub
+     * smí pracovat pouze se svými vlastními záznamy.
+     */
+</script>
+</body>
+</html>

@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLED – administrace</title>
+
+    <style>
+        :root {
+            --tmava: #203b30;
+            --tmavsi: #172d24;
+            --zelena: #286747;
+            --svetla-zelena: #83e0b5;
+            --pozadi: #edf4ed;
+            --bila: #ffffff;
+            --text: #24372c;
+            --tlumena: #718176;
+            --okraj: #d8e5d9;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: var(--pozadi);
+            color: var(--text);
+        }
+
+        button, input, select { font: inherit; }
+        button, a { -webkit-tap-highlight-color: transparent; }
+
+        .rozlozeni { display: flex; min-height: 100vh; }
+
+        .postranni-menu {
+            width: 255px;
+            flex-shrink: 0;
+            padding: 25px 16px;
+            background: var(--tmava);
+            color: white;
+        }
+
+        .logo {
+            padding: 0 12px 27px;
+            border-bottom: 1px solid #426050;
+        }
+
+        .logo h1 {
+            margin: 0;
+            color: var(--svetla-zelena);
+            font-size: 30px;
+            letter-spacing: 1px;
+        }
+
+        .logo p {
+            margin: 7px 0 0;
+            color: #d1e0d5;
+            font-size: 12px;
+        }
+
+        .popis-menu {
+            margin: 25px 12px 10px;
+            color: #b6c9bc;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .navigace { display: flex; flex-direction: column; gap: 5px; }
+
+        .navigace button {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 12px;
+            border: 0;
+            border-radius: 7px;
+            background: transparent;
+            color: #e5eee7;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .navigace button:hover { background: #345343; }
+
+        .navigace button.aktivni {
+            background: #37664b;
+            color: white;
+            box-shadow: inset 3px 0 var(--svetla-zelena);
+        }
+
+        .ikona { width: 24px; text-align: center; font-size: 18px; }
+
+        .menu-dole {
+            margin: 35px 8px 0;
+            padding-top: 18px;
+            border-top: 1px solid #426050;
+        }
+
+        .menu-dole a {
+            display: block;
+            padding: 12px;
+            border-radius: 7px;
+            color: #e5eee7;
+            text-decoration: none;
+        }
+
+        .menu-dole a:hover { background: #345343; }
+
+        .hlavni-cast { min-width: 0; flex: 1; }
+
+        .horni-lista {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 20px 30px;
+            background: white;
+            border-bottom: 1px solid var(--okraj);
+        }
+
+        .horni-lista h2 { margin: 0; font-size: 19px; }
+
+        .horni-lista p {
+            margin: 5px 0 0;
+            color: var(--tlumena);
+            font-size: 13px;
+        }
+
+        .odhlaseni {
+            display: inline-block;
+            padding: 10px 15px;
+            border: 1px solid var(--zelena);
+            border-radius: 6px;
+            color: var(--zelena);
+            background: white;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .odhlaseni:hover { background: #edf7ef; }
+
+        main {
+            max-width: 1450px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .uvitani { margin-bottom: 25px; }
+        .uvitani h2 { margin: 0 0 9px; font-size: 27px; }
+
+        .uvitani p {
+            margin: 0;
+            color: var(--tlumena);
+            line-height: 1.6;
+        }
+
+        .upozorneni {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding: 15px 17px;
+            border: 1px solid #c7dfcc;
+            border-radius: 8px;
+            background: #f5fbf5;
+            line-height: 1.5;
+        }
+
+        .upozorneni strong {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--zelena);
+        }
+
+        .upozorneni p { margin: 0; color: #53695a; font-size: 13px; }
+
+        .prehled {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 17px;
+            margin-bottom: 27px;
+        }
+
+        .statistika {
+            padding: 21px;
+            border: 1px solid var(--okraj);
+            border-radius: 9px;
+            background: white;
+        }
+
+        .statistika .nazev { color: var(--tlumena); font-size: 13px; }
+
+        .statistika .cislo {
+            margin-top: 13px;
+            color: var(--zelena);
+            font-size: 29px;
+            font-weight: bold;
+        }
+
+        .statistika .poznamka {
+            margin-top: 7px;
+            color: var(--tlumena);
+            font-size: 12px;
+        }
+
+        .karta {
+            margin-bottom: 23px;
+            padding: 23px;
+            border: 1px solid var(--okraj);
+            border-radius: 9px;
+            background: white;
+        }
+
+        .hlavicka-karty {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 17px;
+        }
+
+        .hlavicka-karty h3 {
+            margin: 0;
+            color: var(--tmava);
+            font-size: 18px;
+        }
+
+        .hlavicka-karty p {
+            margin: 7px 0 0;
+            color: var(--tlumena);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .stav {
+            display: inline-block;
+            padding: 6px 9px;
+            border-radius: 5px;
+            background: #e2f3e4;
+            color: #28613b;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .rychle-volby {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 15px;
+        }
+
+        .rychla-volba {
+            padding: 18px;
+            border: 1px solid var(--okraj);
+            border-radius: 8px;
+            background: #fbfdfb;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .rychla-volba:hover {
+            border-color: #82b998;
+            background: #f2faf3;
+        }
+
+        .rychla-volba .velka-ikona {
+            display: block;
+            margin-bottom: 12px;
+            font-size: 24px;
+        }
+
+        .rychla-volba strong {
+            display: block;
+            margin-bottom: 7px;
+            color: var(--zelena);
+        }
+
+        .rychla-volba span:last-child {
+            color: var(--tlumena);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .stranka { display: none; }
+        .stranka.aktivni { display: block; }
+
+        .formular {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .pole { display: flex; flex-direction: column; gap: 8px; }
+        .pole.cela-sirka { grid-column: 1 / -1; }
+        .pole label { font-size: 13px; font-weight: bold; }
+
+        .pole input, .pole select {
+            width: 100%;
+            min-height: 43px;
+            padding: 10px 12px;
+            border: 1px solid #cbd9cd;
+            border-radius: 6px;
+            background: white;
+            color: var(--text);
+        }
+
+        .pole input:focus, .pole select:focus {
+            outline: 2px solid #b4dfc2;
+            border-color: var(--zelena);
+        }
+
+        .tlacitko {
+            display: inline-block;
+            padding: 11px 16px;
+            border: 0;
+            border-radius: 6px;
+            background: var(--zelena);
+            color: white;
+            cursor: pointer;
+        }
+
+        .tlacitko:hover { background: var(--tmava); }
+        .tlacitko:disabled { background: #a5b6a9; cursor: not-allowed; }
+
+        .napoveda {
+            margin-top: 18px;
+            padding: 13px;
+            border-radius: 6px;
+            background: #f1f5f1;
+            color: #53695a;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .prazdna-tabulka { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+
+        th, td {
+            padding: 13px 12px;
+            border-bottom: 1px solid #e6eee6;
+            font-size: 13px;
+        }
+
+        th { background: #f5f9f5; color: #53695a; font-weight: bold; }
+
+        .prazdny-stav {
+            padding: 30px 15px;
+            color: var(--tlumena);
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .zprava {
+            margin-bottom: 16px;
+            padding: 12px 14px;
+            border-radius: 6px;
+            background: #f1f5f1;
+            color: #53695a;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .zprava.chyba { background: #fff0ef; color: #922f2b; }
+        .zprava.uspech { background: #eaf8ed; color: #28613b; }
+
+        footer {
+            padding: 10px 30px 25px;
+            color: var(--tlumena);
+            font-size: 12px;
+            text-align: center;
+        }
+
+        @media (max-width: 1050px) {
+            .prehled { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .rychle-volby { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 750px) {
+            .rozlozeni { flex-direction: column; }
+            .postranni-menu { width: 100%; padding: 16px; }
+            .logo { padding-bottom: 16px; }
+            .popis-menu { margin-top: 16px; }
+            .navigace { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .menu-dole { margin-top: 12px; padding-top: 8px; }
+            .horni-lista { padding: 16px; }
+            main { padding: 20px 14px; }
+            .prehled { gap: 10px; }
+            .statistika { padding: 15px; }
+            .statistika .cislo { font-size: 25px; }
+            .formular { grid-template-columns: 1fr; }
+            .pole.cela-sirka { grid-column: auto; }
+            .hlavicka-karty { align-items: flex-start; flex-direction: column; }
+        }
+
+        @media (max-width: 400px) {
+            .navigace { grid-template-columns: 1fr; }
+            .horni-lista { align-items: flex-start; flex-direction: column; }
+        }
+    </style>
+</head>
+
+<body>
+<div class="rozlozeni">
+    <aside class="postranni-menu">
+        <div class="logo">
+            <h1>CLED</h1>
+            <p>Centrální správa sportovních klubů</p>
+        </div>
+
+        <p class="popis-menu">Hlavní nabídka</p>
+
+        <nav class="navigace" aria-label="Hlavní navigace">
+            <button type="button" class="aktivni" data-stranka="prehled"><span class="ikona">⌂</span>Přehled</button>
+            <button type="button" data-stranka="ucty"><span class="ikona">♙</span>Uživatelské účty</button>
+            <button type="button" data-stranka="svazy"><span class="ikona">▤</span>Sportovní svazy</button>
+            <button type="button" data-stranka="krajske-svazy"><span class="ikona">⌘</span>Krajské svazy</button>
+            <button type="button" data-stranka="kluby"><span class="ikona">⚑</span>Sportovní kluby</button>
+        </nav>
+
+        <div class="menu-dole">
+            <a href="/">← Zpět na přihlášení</a>
+            <a href="/logout">↪ Odhlásit se</a>
+        </div>
+    </aside>
+
+    <div class="hlavni-cast">
+        <header class="horni-lista">
+            <div>
+                <h2 id="nazev-stranky">Administrátorský přehled</h2>
+                <p>Centrální správa systému CLED</p>
+            </div>
+            <a class="odhlaseni" href="/logout">Odhlásit se</a>
+        </header>
+
+        <main>
+            <section class="stranka aktivni" id="stranka-prehled">
+                <div class="uvitani">
+                    <h2>Vítejte v administraci CLED</h2>
+                    <p>Zde můžete spravovat uživatelské účty, sportovní svazy, krajské svazy a kluby.</p>
+                </div>
+
+                <div class="upozorneni">
+                    <span>ℹ️</span>
+                    <div>
+                        <strong id="stav-administrace">Načítání údajů</strong>
+                        <p id="text-stavu">Počet uživatelských účtů se načítá z databáze. Správa svazů a klubů bude dostupná po dokončení příslušného API.</p>
+                    </div>
+                </div>
+
+                <div class="prehled">
+                    <article class="statistika">
+                        <div class="nazev">Uživatelské účty</div>
+                        <div class="cislo" id="pocet-uzivatelu">—</div>
+                        <div class="poznamka" id="poznamka-uzivatelu">Čeká na načtení</div>
+                    </article>
+                    <article class="statistika">
+                        <div class="nazev">Sportovní svazy</div>
+                        <div class="cislo">—</div>
+                        <div class="poznamka">API zatím není připojeno</div>
+                    </article>
+                    <article class="statistika">
+                        <div class="nazev">Krajské svazy</div>
+                        <div class="cislo">—</div>
+                        <div class="poznamka">API zatím není připojeno</div>
+                    </article>
+                    <article class="statistika">
+                        <div class="nazev">Sportovní kluby</div>
+                        <div class="cislo">—</div>
+                        <div class="poznamka">API zatím není připojeno</div>
+                    </article>
+                </div>
+
+                <section class="karta">
+                    <div class="hlavicka-karty">
+                        <div><h3>Rychlý přístup</h3><p>Vyberte oblast, kterou chcete spravovat.</p></div>
+                    </div>
+                    <div class="rychle-volby">
+                        <button class="rychla-volba" type="button" data-prejit="ucty"><span class="velka-ikona">♙</span><strong>Uživatelské účty</strong><span>Přehled účtů a jejich přidělených rolí.</span></button>
+                        <button class="rychla-volba" type="button" data-prejit="svazy"><span class="velka-ikona">▤</span><strong>Sportovní svazy</strong><span>Správa svazů a jejich základních údajů.</span></button>
+                        <button class="rychla-volba" type="button" data-prejit="kluby"><span class="velka-ikona">⚑</span><strong>Sportovní kluby</strong><span>Evidence klubů v organizační struktuře.</span></button>
+                    </div>
+                </section>
+            </section>
+
+            <section class="stranka" id="stranka-ucty">
+                <div class="uvitani"><h2>Uživatelské účty</h2><p>Přehled uživatelů systému CLED a jejich rolí.</p></div>
+                <section class="karta">
+                    <div class="hlavicka-karty">
+                        <div><h3>Existující účty</h3><p>Údaje se načítají ze zabezpečeného API.</p></div>
+                        <button class="tlacitko" id="obnovit-uzivatele" type="button">Obnovit seznam</button>
+                    </div>
+                    <div id="zprava-uzivatele" class="zprava" role="status" aria-live="polite">Načítám uživatelské účty…</div>
+                    <div class="prazdna-tabulka">
+                        <table>
+                            <thead><tr><th>Jméno a příjmení</th><th>E-mail</th><th>Role</th><th>Stav</th></tr></thead>
+                            <tbody id="seznam-uzivatelu"><tr><td colspan="4" class="prazdny-stav">Načítám uživatelské účty…</td></tr></tbody>
+                        </table>
+                    </div>
+                    <div class="napoveda">Hesla ani jejich hashe se do přehledu neposílají. Účty se zobrazují podle údajů vrácených zabezpečeným API.</div>
+                </section>
+            </section>
+
+            <section class="stranka" id="stranka-svazy">
+                <div class="uvitani"><h2>Sportovní svazy</h2><p>Evidence sportovních svazů v systému CLED.</p></div>
+                <section class="karta">
+                    <div class="hlavicka-karty"><div><h3>Vytvoření sportovního svazu</h3><p>Formulář bude po doplnění backendu ukládat údaje do databáze.</p></div><span class="stav">API se připravuje</span></div>
+                    <form class="formular" data-pripraveny-formular>
+                        <div class="pole"><label for="svaz-nazev">Název svazu</label><input id="svaz-nazev" name="nazev" type="text" required placeholder="Např. Český svaz karate"></div>
+                        <div class="pole"><label for="svaz-email">Kontaktní e-mail</label><input id="svaz-email" name="email" type="email" placeholder="svaz@example.cz"></div>
+                        <div class="pole cela-sirka"><button class="tlacitko" type="submit">Vytvořit svaz</button></div>
+                    </form>
+                    <div class="napoveda">Formulář zatím nic neukládá. Nejprve je potřeba doplnit zabezpečené API a ověřit ukládání do PostgreSQL.</div>
+                </section>
+                <section class="karta"><h3>Existující svazy</h3><div class="prazdny-stav">Seznam svazů se zobrazí po propojení s databází.</div></section>
+            </section>
+
+            <section class="stranka" id="stranka-krajske-svazy">
+                <div class="uvitani"><h2>Krajské svazy</h2><p>Evidence krajských svazů a jejich nadřazených svazů.</p></div>
+                <section class="karta">
+                    <div class="hlavicka-karty"><div><h3>Vytvoření krajského svazu</h3><p>Krajský svaz bude přiřazen ke konkrétnímu sportovnímu svazu.</p></div><span class="stav">API se připravuje</span></div>
+                    <form class="formular" data-pripraveny-formular>
+                        <div class="pole"><label for="kraj-nazev">Název krajského svazu</label><input id="kraj-nazev" name="nazev" type="text" required placeholder="Např. Krajský svaz karate"></div>
+                        <div class="pole"><label for="kraj-email">Kontaktní e-mail</label><input id="kraj-email" name="email" type="email" placeholder="kraj@example.cz"></div>
+                        <div class="pole cela-sirka"><label for="kraj-svaz">Nadřazený sportovní svaz</label><select id="kraj-svaz" name="svazId" required><option value="">Výběr bude dostupný po načtení svazů</option></select></div>
+                        <div class="pole cela-sirka"><button class="tlacitko" type="submit">Vytvořit krajský svaz</button></div>
+                    </form>
+                    <div class="napoveda">Výběr nadřazeného svazu se načte z databáze až po dokončení API.</div>
+                </section>
+                <section class="karta"><h3>Existující krajské svazy</h3><div class="prazdny-stav">Seznam krajských svazů se zobrazí po propojení s databází.</div></section>
+            </section>
+
+            <section class="stranka" id="stranka-kluby">
+                <div class="uvitani"><h2>Sportovní kluby</h2><p>Správa klubů a jejich přiřazení k organizační struktuře.</p></div>
+                <section class="karta">
+                    <div class="hlavicka-karty"><div><h3>Vytvoření sportovního klubu</h3><p>Klub bude přiřazen ke krajskému svazu.</p></div><span class="stav">API se připravuje</span></div>
+                    <form class="formular" data-pripraveny-formular>
+                        <div class="pole"><label for="klub-nazev">Název klubu</label><input id="klub-nazev" name="nazev" type="text" required placeholder="Např. Karate klub Olomouc"></div>
+                        <div class="pole"><label for="klub-email">Kontaktní e-mail</label><input id="klub-email" name="email" type="email" placeholder="klub@example.cz"></div>
+                        <div class="pole cela-sirka"><label for="klub-kraj">Krajský svaz</label><select id="klub-kraj" name="krajskySvazId" required><option value="">Výběr bude dostupný po načtení krajských svazů</option></select></div>
+                        <div class="pole cela-sirka"><button class="tlacitko" type="submit">Vytvořit klub</button></div>
+                    </form>
+                    <div class="napoveda">Po propojení s databází bude možné vybírat z existujících krajských svazů. Správu trenérů a cvičenců následně zajistí příslušný klub.</div>
+                </section>
+                <section class="karta"><h3>Existující kluby</h3><div class="prazdny-stav">Seznam klubů se zobrazí po propojení s databází.</div></section>
+            </section>
+        </main>
+
+        <footer>CLED – Centrální správa sportovních klubů</footer>
+    </div>
+</div>
+
+<script>
+    // Přepínání jednotlivých částí administrace.
+    const tlacitkaMenu = document.querySelectorAll("[data-stranka]");
+    const stranky = document.querySelectorAll(".stranka");
+    const nazevStranky = document.getElementById("nazev-stranky");
+
+    const nazvyStranek = {
+        prehled: "Administrátorský přehled",
+        ucty: "Uživatelské účty",
+        svazy: "Sportovní svazy",
+        "krajske-svazy": "Krajské svazy",
+        kluby: "Sportovní kluby"
+    };
+
+    function zobrazStranku(id) {
+        stranky.forEach(function (stranka) {
+            stranka.classList.toggle("aktivni", stranka.id === "stranka-" + id);
+        });
+
+        tlacitkaMenu.forEach(function (tlacitko) {
+            tlacitko.classList.toggle("aktivni", tlacitko.dataset.stranka === id);
+        });
+
+        nazevStranky.textContent = nazvyStranek[id] || "Administrace CLED";
+
+        if (id === "ucty") {
+            nactiUzivatele();
+        }
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    tlacitkaMenu.forEach(function (tlacitko) {
+        tlacitko.addEventListener("click", function () {
+            zobrazStranku(tlacitko.dataset.stranka);
+        });
+    });
+
+    document.querySelectorAll("[data-prejit]").forEach(function (tlacitko) {
+        tlacitko.addEventListener("click", function () {
+            zobrazStranku(tlacitko.dataset.prejit);
+        });
+    });
+
+    const tabulkaUzivatelu = document.getElementById("seznam-uzivatelu");
+    const zpravaUzivatele = document.getElementById("zprava-uzivatele");
+    const pocetUzivatelu = document.getElementById("pocet-uzivatelu");
+    const poznamkaUzivatelu = document.getElementById("poznamka-uzivatelu");
+    const tlacitkoObnovit = document.getElementById("obnovit-uzivatele");
+
+    function zobrazStavTabulky(text) {
+        tabulkaUzivatelu.replaceChildren();
+
+        const radek = document.createElement("tr");
+        const bunka = document.createElement("td");
+
+        bunka.colSpan = 4;
+        bunka.className = "prazdny-stav";
+        bunka.textContent = text;
+
+        radek.appendChild(bunka);
+        tabulkaUzivatelu.appendChild(radek);
+    }
+
+    async function nactiUzivatele() {
+        tlacitkoObnovit.disabled = true;
+        zpravaUzivatele.className = "zprava";
+        zpravaUzivatele.textContent = "Načítám uživatelské účty…";
+        zobrazStavTabulky("Načítám uživatelské účty…");
+
+        try {
+            const odpoved = await fetch("/api/uzivatele", {
+                method: "GET",
+                headers: { "Accept": "application/json" },
+                credentials: "same-origin"
+            });
+
+            if (odpoved.redirected && new URL(odpoved.url).pathname === "/") {
+                throw new Error("Přihlášení vypršelo. Přihlaste se znovu.");
+            }
+
+            if (odpoved.status === 401) {
+                throw new Error("Pro zobrazení účtů se musíte znovu přihlásit.");
+            }
+
+            if (odpoved.status === 403) {
+                throw new Error("K seznamu uživatelů nemáte oprávnění. Přihlaste se účtem s rolí ADMIN.");
+            }
+
+            if (!odpoved.ok) {
+                throw new Error("Načtení účtů se nezdařilo (HTTP " + odpoved.status + ").");
+            }
+
+            const uzivatele = await odpoved.json();
+
+            if (!Array.isArray(uzivatele)) {
+                throw new Error("API nevrátilo očekávaný seznam uživatelů.");
+            }
+
+            pocetUzivatelu.textContent = uzivatele.length;
+            poznamkaUzivatelu.textContent = "Načteno z databáze";
+            tabulkaUzivatelu.replaceChildren();
+
+            if (uzivatele.length === 0) {
+                zobrazStavTabulky("V databázi zatím nejsou žádné uživatelské účty.");
+            } else {
+                uzivatele.forEach(function (uzivatel) {
+                    const radek = document.createElement("tr");
+                    const jmeno = document.createElement("td");
+                    const email = document.createElement("td");
+                    const role = document.createElement("td");
+                    const stav = document.createElement("td");
+
+                    jmeno.textContent = [uzivatel.jmeno, uzivatel.prijmeni]
+                        .filter(Boolean)
+                        .join(" ") || "—";
+
+                    email.textContent = uzivatel.email || "—";
+
+                    role.textContent = Array.isArray(uzivatel.role)
+                        ? uzivatel.role.join(", ")
+                        : "";
+
+                    stav.textContent = uzivatel.aktivni ? "Aktivní" : "Neaktivní";
+
+                    radek.append(jmeno, email, role, stav);
+                    tabulkaUzivatelu.appendChild(radek);
+                });
+            }
+
+            zpravaUzivatele.className = "zprava uspech";
+            zpravaUzivatele.textContent =
+                "Uživatelské účty byly úspěšně načteny (" + uzivatele.length + ").";
+
+            document.getElementById("stav-administrace").textContent = "Uživatelské účty načteny";
+            document.getElementById("text-stavu").textContent =
+                "Počet uživatelských účtů je načten z databáze. Správa svazů a klubů bude dostupná po dokončení příslušného API.";
+        } catch (chyba) {
+            console.error("Chyba při načítání uživatelů:", chyba);
+
+            pocetUzivatelu.textContent = "—";
+            poznamkaUzivatelu.textContent = "Nepodařilo se načíst";
+            zobrazStavTabulky(chyba.message || "Uživatelské účty se nepodařilo načíst.");
+
+            zpravaUzivatele.className = "zprava chyba";
+            zpravaUzivatele.textContent =
+                chyba.message || "Uživatelské účty se nepodařilo načíst.";
+        } finally {
+            tlacitkoObnovit.disabled = false;
+        }
+    }
+
+    tlacitkoObnovit.addEventListener("click", nactiUzivatele);
+
+    // Zabráníme dojmu, že se zatím nepropojené formuláře ukládají.
+    document.querySelectorAll("[data-pripraveny-formular]").forEach(function (formular) {
+        formular.addEventListener("submit", function (udalost) {
+            udalost.preventDefault();
+            alert("Tento formulář zatím není propojen s databází. Záznam nebyl uložen.");
+        });
+    });
+
+    // Načtení počtu účtů při otevření administrace.
+    nactiUzivatele();
+</script>
+</body>
+</html>

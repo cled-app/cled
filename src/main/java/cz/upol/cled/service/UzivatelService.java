@@ -1,10 +1,13 @@
 package cz.upol.cled.service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import cz.upol.cled.dto.UzivatelPrehledDto;
 import cz.upol.cled.model.Uzivatel;
 import cz.upol.cled.repository.UzivatelRepository;
 
@@ -34,7 +37,7 @@ public class UzivatelService {
 
     /**
      * Uloží uživatele do databáze.
-     * Heslo před uložením zašifruje pomocí BCrypt.
+     * Heslo před uložením zahashuje pomocí BCrypt.
      *
      * @param uzivatel uživatel, který se má uložit
      * @return uložený uživatel
@@ -59,5 +62,25 @@ public class UzivatelService {
      */
     public void smaz(Long id) {
         uzivatelRepository.deleteById(id);
+    }
+
+    /**
+     * Vrátí seznam uživatelských účtů pro administraci.
+     * Hesla ani jejich hashe se do výsledku nepředávají.
+     *
+     * @return seznam uživatelů pro administrátorský přehled
+     */
+    public List<UzivatelPrehledDto> najdiVsechnyProAdministraci() {
+        return uzivatelRepository.findAll()
+                .stream()
+                .map(uzivatel -> new UzivatelPrehledDto(
+                        uzivatel.getId(),
+                        uzivatel.getJmeno(),
+                        uzivatel.getPrijmeni(),
+                        uzivatel.getEmail(),
+                        Set.copyOf(uzivatel.getRole()),
+                        uzivatel.isAktivni()
+                ))
+                .toList();
     }
 }

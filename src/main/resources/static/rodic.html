@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLED – Rodič</title>
+
+    <style>
+        :root {
+            --zelena: #198754;
+            --tmava-zelena: #126640;
+            --svetla-zelena: #eaf5ee;
+            --pozadi: #f5f7f6;
+            --bila: #ffffff;
+            --text: #26332b;
+            --seda: #6c757d;
+            --okraj: #dee5e0;
+            --modra: #e8f1ff;
+            --oranzova: #fff3cd;
+            --cervena: #fdebed;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            color: var(--text);
+            background: var(--pozadi);
+        }
+
+        header {
+            background: var(--bila);
+            border-bottom: 1px solid var(--okraj);
+            padding: 16px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            color: var(--zelena);
+            font-size: 27px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: var(--text);
+            font-size: 14px;
+            font-weight: normal;
+            letter-spacing: 0;
+            margin-left: 10px;
+        }
+
+        .uzivatel {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .role {
+            background: var(--svetla-zelena);
+            color: var(--tmava-zelena);
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        button {
+            border: none;
+            border-radius: 6px;
+            padding: 10px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .tlacitko-zelene {
+            background: var(--zelena);
+            color: white;
+        }
+
+        .tlacitko-zelene:hover {
+            background: var(--tmava-zelena);
+        }
+
+        .tlacitko-sede {
+            background: #e9ecef;
+            color: var(--text);
+        }
+
+        .rozlozeni {
+            display: grid;
+            grid-template-columns: 225px minmax(0, 1fr);
+            min-height: calc(100vh - 75px);
+        }
+
+        aside {
+            background: var(--bila);
+            border-right: 1px solid var(--okraj);
+            padding: 22px 14px;
+        }
+
+        .menu-nadpis {
+            color: var(--seda);
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 10px 12px;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .menu a {
+            color: var(--text);
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 7px;
+            font-size: 14px;
+        }
+
+        .menu a:hover,
+        .menu a.aktivni {
+            background: var(--svetla-zelena);
+            color: var(--tmava-zelena);
+            font-weight: bold;
+        }
+
+        main {
+            padding: 30px;
+            min-width: 0;
+        }
+
+        .hlavicka-stranky {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 28px;
+        }
+
+        h2 {
+            margin: 0;
+            font-size: 19px;
+        }
+
+        .popis {
+            margin: 0;
+            color: var(--seda);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .statistiky {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .karta {
+            background: var(--bila);
+            border: 1px solid var(--okraj);
+            border-radius: 10px;
+            padding: 21px;
+            min-width: 0;
+        }
+
+        .statistika-nazev {
+            color: var(--seda);
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .statistika-hodnota {
+            font-size: 27px;
+            font-weight: bold;
+            color: var(--tmava-zelena);
+        }
+
+        .sekce {
+            background: var(--bila);
+            border: 1px solid var(--okraj);
+            border-radius: 10px;
+            padding: 22px;
+            margin-bottom: 22px;
+        }
+
+        .hlavicka-sekce {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        .mrizka-dvou {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .mrizka-formulare {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .pole {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .pole.cela-sirka {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            border: 1px solid #ced8d1;
+            border-radius: 6px;
+            padding: 11px 12px;
+            font: inherit;
+            font-size: 14px;
+            background: white;
+        }
+
+        input[readonly] {
+            background: #f0f2f1;
+            color: #5c665f;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: 2px solid #b7dfc6;
+            border-color: var(--zelena);
+        }
+
+        .tabulka-oblast {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 13px 12px;
+            border-bottom: 1px solid var(--okraj);
+        }
+
+        th {
+            background: #f7f9f7;
+            color: #536057;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            white-space: nowrap;
+        }
+
+        tbody tr:hover {
+            background: #fafcfb;
+        }
+
+        .stav {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 15px;
+            background: var(--svetla-zelena);
+            color: var(--tmava-zelena);
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .stav-ceka {
+            background: var(--oranzova);
+            color: #856404;
+        }
+
+        .stav-info {
+            background: var(--modra);
+            color: #174a8b;
+        }
+
+        .stav-chybi {
+            background: var(--cervena);
+            color: #a71d2a;
+        }
+
+        .prazdno {
+            text-align: center;
+            color: var(--seda);
+            padding: 25px 12px;
+        }
+
+        .zprava {
+            display: none;
+            padding: 13px 15px;
+            border-radius: 6px;
+            margin-bottom: 18px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .zprava-info {
+            display: block;
+            background: var(--modra);
+            color: #174a8b;
+        }
+
+        .zprava-uspech {
+            display: block;
+            background: var(--svetla-zelena);
+            color: var(--tmava-zelena);
+        }
+
+        .upozorneni {
+            border-left: 4px solid #e0a800;
+            background: #fff9e6;
+            padding: 14px 16px;
+            border-radius: 5px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .rychla-akce {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .rychla-akce p {
+            color: var(--seda);
+            font-size: 13px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .pomocny-text {
+            color: var(--seda);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        footer {
+            text-align: center;
+            color: var(--seda);
+            font-size: 12px;
+            padding: 18px;
+        }
+
+        @media (max-width: 1000px) {
+            .statistiky {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .rozlozeni {
+                grid-template-columns: 200px minmax(0, 1fr);
+            }
+
+            main {
+                padding: 22px;
+            }
+        }
+
+        @media (max-width: 700px) {
+            header {
+                padding: 14px 18px;
+            }
+
+            .rozlozeni {
+                grid-template-columns: 1fr;
+            }
+
+            aside {
+                border-right: none;
+                border-bottom: 1px solid var(--okraj);
+                padding: 12px;
+            }
+
+            .menu {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            main {
+                padding: 17px;
+            }
+
+            .statistiky,
+            .mrizka-dvou,
+            .mrizka-formulare {
+                grid-template-columns: 1fr;
+            }
+
+            .pole.cela-sirka {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <div class="logo">CLED <span>Rodičovský přístup</span></div>
+
+    <div class="uzivatel">
+        <span class="role">RODIČ</span>
+        <span id="jmeno-uzivatele">Přihlášený rodič</span>
+        <button class="tlacitko-sede" type="button" id="odhlasit">
+            Odhlásit
+        </button>
+    </div>
+</header>
+
+<div class="rozlozeni">
+    <aside>
+        <div class="menu-nadpis">Přehled dítěte</div>
+
+        <nav class="menu">
+            <a href="#prehled" class="aktivni">Přehled</a>
+            <a href="#dite">Profil dítěte</a>
+            <a href="#treninky">Tréninky</a>
+            <a href="#dochazka">Docházka</a>
+            <a href="#omluvenky">Omluvenky</a>
+            <a href="#akce">Sportovní akce</a>
+            <a href="#zdravotni">Zdravotní prohlídka</a>
+            <a href="#profil-rodice">Můj profil</a>
+        </nav>
+    </aside>
+
+    <main>
+        <section id="prehled">
+            <div class="hlavicka-stranky">
+                <div>
+                    <h1>Přehled sportovce</h1>
+                    <p class="popis">
+                        Informace o trénincích, docházce a sportovních aktivitách tvého dítěte.
+                    </p>
+                </div>
+
+                <button class="tlacitko-zelene" type="button"
+                        onclick="window.location.hash = 'omluvenky'">
+                    Omluvit dítě z tréninku
+                </button>
+            </div>
+
+            <div id="zprava" class="zprava" role="status"></div>
+
+            <div class="statistiky">
+                <div class="karta">
+                    <div class="statistika-nazev">Nadcházející tréninky</div>
+                    <div class="statistika-hodnota" id="pocet-treninku">—</div>
+                </div>
+
+                <div class="karta">
+                    <div class="statistika-nazev">Docházka dítěte</div>
+                    <div class="statistika-hodnota" id="procento-dochazky">—</div>
+                </div>
+
+                <div class="karta">
+                    <div class="statistika-nazev">Nadcházející akce</div>
+                    <div class="statistika-hodnota" id="pocet-akci">—</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="mrizka-dvou">
+            <section class="sekce rychla-akce">
+                <h2>Nejbližší trénink</h2>
+                <p id="nejblizsi-trenink">
+                    Informace o nejbližším tréninku se načtou z databáze.
+                </p>
+                <button class="tlacitko-zelene" type="button"
+                        onclick="window.location.hash = 'treninky'">
+                    Zobrazit rozvrh
+                </button>
+            </section>
+
+            <section class="sekce rychla-akce">
+                <h2>Zdravotní prohlídka</h2>
+                <p id="stav-prohlidky">
+                    Informace o zdravotní prohlídce se načtou z databáze.
+                </p>
+                <button class="tlacitko-zelene" type="button"
+                        onclick="window.location.hash = 'zdravotni'">
+                    Zobrazit informace
+                </button>
+            </section>
+        </div>
+
+        <section class="sekce" id="dite">
+            <div class="hlavicka-sekce">
+                <h2>Profil dítěte</h2>
+                <span class="stav">Propojený sportovec</span>
+            </div>
+
+            <div class="mrizka-formulare">
+                <div class="pole">
+                    <label for="dite-jmeno">Jméno</label>
+                    <input id="dite-jmeno" type="text" readonly
+                           placeholder="Načte se z databáze">
+                </div>
+
+                <div class="pole">
+                    <label for="dite-prijmeni">Příjmení</label>
+                    <input id="dite-prijmeni" type="text" readonly
+                           placeholder="Načte se z databáze">
+                </div>
+
+                <div class="pole">
+                    <label for="dite-klub">Sportovní klub</label>
+                    <input id="dite-klub" type="text" readonly
+                           placeholder="Načte se z databáze">
+                </div>
+
+                <div class="pole">
+                    <label for="dite-skupina">Tréninková skupina</label>
+                    <input id="dite-skupina" type="text" readonly
+                           placeholder="Načte se z databáze">
+                </div>
+
+                <div class="pole cela-sirka">
+                    <label for="dite-trener">Trenér</label>
+                    <input id="dite-trener" type="text" readonly
+                           placeholder="Načte se z databáze">
+                </div>
+            </div>
+
+            <p class="pomocny-text" style="margin-top: 15px;">
+                Údaje dítěte spravuje jeho sportovní klub.
+            </p>
+        </section>
+
+        <section class="sekce" id="treninky">
+            <div class="hlavicka-sekce">
+                <h2>Tréninky dítěte</h2>
+            </div>
+
+            <div class="tabulka-oblast">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Datum</th>
+                        <th>Čas</th>
+                        <th>Místo</th>
+                        <th>Trenér</th>
+                        <th>Stav</th>
+                    </tr>
+                    </thead>
+
+                    <tbody id="seznam-treninku">
+                    <tr>
+                        <td colspan="5" class="prazdno">
+                            Tréninky se zobrazí po propojení s API.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="sekce" id="dochazka">
+            <div class="hlavicka-sekce">
+                <h2>Docházka dítěte</h2>
+            </div>
+
+            <p class="popis">
+                Přehled účasti dítěte na trénincích.
+            </p>
+
+            <div class="tabulka-oblast" style="margin-top: 18px;">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Datum</th>
+                        <th>Trénink</th>
+                        <th>Stav docházky</th>
+                    </tr>
+                    </thead>
+
+                    <tbody id="seznam-dochazky">
+                    <tr>
+                        <td colspan="3" class="prazdno">
+                            Docházka se zobrazí po propojení s API.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="sekce" id="omluvenky">
+            <div class="hlavicka-sekce">
+                <h2>Omluvenka z tréninku</h2>
+            </div>
+
+            <p class="popis" style="margin-bottom: 18px;">
+                Pokud se dítě nemůže zúčastnit tréninku, můžete poslat omluvenku trenérovi.
+            </p>
+
+            <form id="formular-omluvenky">
+                <div class="mrizka-formulare">
+                    <div class="pole">
+                        <label for="omluvenka-datum">Datum tréninku</label>
+                        <input id="omluvenka-datum" name="datum"
+                               type="date" required>
+                    </div>
+
+                    <div class="pole">
+                        <label for="omluvenka-duvod">Důvod nepřítomnosti</label>
+                        <select id="omluvenka-duvod" name="duvod" required>
+                            <option value="">Vyberte důvod</option>
+                            <option value="nemoc">Nemoc</option>
+                            <option value="zdravotni_duvody">Zdravotní důvody</option>
+                            <option value="rodinne_duvody">Rodinné důvody</option>
+                            <option value="skolni_povinnosti">Školní povinnosti</option>
+                            <option value="jiny">Jiný důvod</option>
+                        </select>
+                    </div>
+
+                    <div class="pole cela-sirka">
+                        <label for="omluvenka-poznamka">Poznámka pro trenéra</label>
+                        <textarea id="omluvenka-poznamka" name="poznamka"
+                                  rows="4"
+                                  placeholder="Nepovinné doplňující informace"></textarea>
+                    </div>
+                </div>
+
+                <div class="akce-formulare" style="margin-top: 17px;">
+                    <button class="tlacitko-zelene" type="submit">
+                        Odeslat omluvenku
+                    </button>
+                </div>
+            </form>
+
+            <p class="pomocny-text" style="margin-top: 12px;">
+                Formulář zatím není propojený s databází. Omluvenka se nyní skutečně neodesílá.
+            </p>
+        </section>
+
+        <section class="sekce" id="akce">
+            <div class="hlavicka-sekce">
+                <h2>Sportovní akce</h2>
+            </div>
+
+            <div class="tabulka-oblast">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Název akce</th>
+                        <th>Datum</th>
+                        <th>Místo</th>
+                        <th>Informace</th>
+                    </tr>
+                    </thead>
+
+                    <tbody id="seznam-akci">
+                    <tr>
+                        <td colspan="4" class="prazdno">
+                            Sportovní akce se zobrazí po propojení s API.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="sekce" id="zdravotni">
+            <div class="hlavicka-sekce">
+                <h2>Zdravotní prohlídka</h2>
+            </div>
+
+            <div class="upozorneni">
+                Zdravotní informace jsou citlivé údaje. Zobrazí se pouze oprávněnému
+                rodiči propojeného dítěte.
+            </div>
+
+            <div class="mrizka-formulare" style="margin-top: 18px;">
+                <div class="pole">
+                    <label for="prohlidka-posledni">Datum poslední prohlídky</label>
+                    <input id="prohlidka-posledni" type="text" readonly
+                           placeholder="Načte se z databáze">
+                </div>
+
+                <div class="pole">
+                    <label for="prohlidka-dalsi">Platnost / další termín</label>
+                    <input id="prohlidka-dalsi" type="text" readonly
+                           placeholder="Načte se z databáze">
+                </div>
+
+                <div class="pole cela-sirka">
+                    <label for="prohlidka-stav">Stav prohlídky</label>
+                    <input id="prohlidka-stav" type="text" readonly
+                           placeholder="Načte se z databáze">
+                </div>
+            </div>
+        </section>
+
+        <section class="sekce" id="profil-rodice">
+            <div class="hlavicka-sekce">
+                <h2>Můj profil</h2>
+            </div>
+
+            <div class="mrizka-formulare">
+                <div class="pole">
+                    <label for="rodic-jmeno">Jméno</label>
+                    <input id="rodic-jmeno" type="text" readonly
+                           placeholder="Načte se z účtu">
+                </div>
+
+                <div class="pole">
+                    <label for="rodic-prijmeni">Příjmení</label>
+                    <input id="rodic-prijmeni" type="text" readonly
+                           placeholder="Načte se z účtu">
+                </div>
+
+                <div class="pole cela-sirka">
+                    <label for="rodic-email">E-mail</label>
+                    <input id="rodic-email" type="email" readonly
+                           placeholder="Načte se z účtu">
+                </div>
+            </div>
+
+            <p class="pomocny-text" style="margin-top: 15px;">
+                Pro změnu osobních údajů kontaktujte správce svého klubu.
+            </p>
+        </section>
+
+        <footer>
+            CLED – Club Edit | Rodičovský přístup
+        </footer>
+    </main>
+</div>
+
+<script>
+    // Zobrazení zprávy uživateli.
+    function zobrazZpravu(text, typ = "info") {
+        const zprava = document.getElementById("zprava");
+
+        zprava.textContent = text;
+        zprava.className = typ === "uspech"
+            ? "zprava zprava-uspech"
+            : "zprava zprava-info";
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    // Zvýraznění vybrané položky menu.
+    document.querySelectorAll(".menu a").forEach(odkaz => {
+        odkaz.addEventListener("click", () => {
+            document.querySelectorAll(".menu a").forEach(polozka => {
+                polozka.classList.remove("aktivni");
+            });
+
+            odkaz.classList.add("aktivni");
+        });
+    });
+
+    // Odhlášení později propojíme se Spring Security.
+    document.getElementById("odhlasit").addEventListener("click", () => {
+        zobrazZpravu("Odhlášení bude propojeno se Spring Security.");
+    });
+
+    // Zatím se omluvenka nikam neukládá.
+    document.getElementById("formular-omluvenky").addEventListener("submit", event => {
+        event.preventDefault();
+
+        zobrazZpravu(
+            "Formulář je připravený, ale omluvenka zatím nebyla odeslána. Ještě je potřeba propojit API.",
+            "info"
+        );
+    });
+
+    /*
+     * Budoucí propojení s backendem Spring Boot:
+     *
+     * - načtení profilu rodiče,
+     * - načtení pouze propojeného dítěte,
+     * - načtení tréninků, docházky a sportovních akcí,
+     * - načtení oprávněně dostupných informací o zdravotní prohlídce,
+     * - odeslání omluvenky do databáze.
+     *
+     * Backend musí ověřovat přihlášeného rodiče a jeho vztah k dítěti.
+     */
+</script>
+</body>
+</html>

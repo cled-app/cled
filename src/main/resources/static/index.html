@@ -2,131 +2,201 @@
 <html lang="cs">
 
 <head>
-    <!-- Nastavení kódování stránky. -->
     <meta charset="UTF-8">
-
-    <!-- Přizpůsobení zobrazení pro různé velikosti obrazovek. -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Název stránky zobrazený v záložce prohlížeče. -->
-    <title>CLED – přihlášení</title>
+    <title>CLED – club edit</title>
 
     <style>
-        /* Základní vzhled celé stránky. */
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f8;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: #e4f3df;
+            color: white;
         }
 
-        /* Hlavní karta přihlašovacího formuláře. */
-        .login-box {
-            width: 350px;
-            background-color: white;
-            padding: 35px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-            text-align: center;
+        .uvodni-stranka {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 300px;
+            min-height: 100vh;
+            padding: 5px;
         }
 
-        /* Nastavení vzhledu loga CLED. */
-        .logo {
-            width: 100px;
-            height: 100px;
-            object-fit: contain;
-            margin-bottom: 10px;
+        .hlavni-cast {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-width: 0;
+            padding: 24px;
+            background: linear-gradient(135deg, #263b34, #182b25);
+            border-left: 5px solid #a5d6c5;
+            border-right: 3px solid #a5d6c5;
         }
 
-        /* Hlavní nadpis aplikace CLED. */
         h1 {
-            margin: 0 0 10px;
-            color: #2e7d32;
+            margin: 0 0 20px;
+            color: #83e0b5;
+            text-align: center;
+            font-size: clamp(25px, 4vw, 46px);
+            line-height: 1.2;
         }
 
-        /* Krátký popis aplikace pod hlavním názvem. */
-        .subtitle {
-            color: #666;
-            margin-bottom: 30px;
+        .logo {
+            display: block;
+            width: min(100%, 400px);
+            height: auto;
+            object-fit: contain;
         }
 
-        /* Popisky jednotlivých polí formuláře. */
+        .prihlasovaci-cast {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 22px;
+            color: white;
+            background: linear-gradient(160deg, #c8eac1, #9bcf83);
+        }
+
+        .nadpis-panelu {
+            margin: 0 0 28px;
+            padding: 9px 18px;
+            border: 1px solid #547b49;
+            background: #6fa75d;
+            font-size: 16px;
+            font-weight: normal;
+        }
+
+        form {
+            width: 100%;
+            max-width: 260px;
+        }
+
         label {
             display: block;
-            text-align: left;
-            margin-bottom: 6px;
-            font-weight: bold;
+            margin: 0 0 5px;
+            font-size: 13px;
         }
 
-        /* Vzhled polí pro zadání e-mailu a hesla. */
         input {
+            display: block;
             width: 100%;
-            box-sizing: border-box;
-            padding: 11px;
+            min-width: 0;
             margin-bottom: 18px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            padding: 10px;
+            border: 1px solid #668c5c;
+            border-radius: 2px;
+            background: #edf8e9;
+            color: #243d28;
             font-size: 15px;
         }
 
-        /* Hlavní tlačítko pro odeslání přihlašovacího formuláře. */
-        button {
+        input:focus {
+            outline: 2px solid #477e42;
+            outline-offset: 1px;
+        }
+
+        .tlacitko {
+            display: block;
             width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 5px;
-            background-color: #2e7d32;
+            margin-top: 24px;
+            padding: 11px;
+            border: 1px solid #466e3d;
+            border-radius: 2px;
+            background: #6fa75d;
             color: white;
-            font-size: 16px;
+            font-size: 15px;
             cursor: pointer;
         }
 
-        /* Změna barvy tlačítka při najetí kurzorem. */
-        button:hover {
-            background-color: #256628;
+        .tlacitko:hover {
+            background: #578d48;
+        }
+
+        .pomocny-text {
+            margin-top: 18px;
+            color: #31532c;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        @media (max-width: 650px) {
+            .uvodni-stranka {
+                grid-template-columns: 1fr;
+                padding: 0;
+            }
+
+            .hlavni-cast {
+                min-height: 320px;
+                padding: 28px 16px;
+                border: none;
+            }
+
+            .logo {
+                width: min(75%, 260px);
+            }
+
+            .prihlasovaci-cast {
+                padding: 28px 22px 36px;
+            }
+
+            form {
+                max-width: 340px;
+            }
         }
     </style>
 </head>
 
 <body>
+    <main class="uvodni-stranka">
 
-    <!-- Hlavní přihlašovací karta aplikace CLED. -->
-    <div class="login-box">
+        <section class="hlavni-cast">
+            <h1>Vítejte v CLED – club edit</h1>
 
-        <!-- Logo aplikace CLED. -->
-        <img src="images/icon.png" alt="Logo CLED" class="logo">
+            <img
+                src="images/icon.png"
+                alt="Logo CLED"
+                class="logo">
+        </section>
 
-        <!-- Název aplikace. -->
-        <h1>CLED</h1>
+        <section class="prihlasovaci-cast">
+            <h2 class="nadpis-panelu">Přihlášení</h2>
 
-        <!-- Krátký popis aplikace. -->
-        <div class="subtitle">
-            Správa sportovního klubu a svazu
-        </div>
+            <form method="post" action="/login">
+                <label for="email">E-mail</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Zadejte e-mail"
+                    autocomplete="username"
+                    required>
 
-        <!-- Přihlašovací formulář. -->
-        <form method="post" action="/login">
+                <label for="heslo">Heslo</label>
+                <input
+                    type="password"
+                    id="heslo"
+                    name="heslo"
+                    placeholder="Zadejte heslo"
+                    autocomplete="current-password"
+                    required>
 
-            <!-- Pole pro zadání e-mailové adresy. -->
-            <label for="email">E-mail</label>
+                <button class="tlacitko" type="submit">
+                    Přihlásit
+                </button>
+            </form>
 
-            <input type="email" id="email" name="email" placeholder="Zadejte e-mail">
+            <p class="pomocny-text">
+                Správa sportovních klubů a svazů
+            </p>
+        </section>
 
-            <!-- Pole pro zadání hesla. -->
-            <label for="heslo">Heslo</label>
-
-            <input type="password" id="heslo" name="heslo" placeholder="Zadejte heslo">
-
-            <!-- Tlačítko pro přihlášení. -->
-            <button type="submit">Přihlásit</button>
-
-        </form>
-
-    </div>
-
+    </main>
 </body>
 
 </html>
